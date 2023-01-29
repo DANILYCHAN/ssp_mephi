@@ -44,6 +44,8 @@ if (mysqli_num_rows($check_user) > 0) {
         "inn" => $user['inn']
     ];
 
+    $_SESSION['log_start'] = time();
+
     $response = [
         "status" => true
     ];

@@ -1,5 +1,11 @@
 <?php
 session_start();
+$log_expr_time = 120;
+if (isset($_SESSION['log_start']) && time() - $_SESSION['log_start'] > $log_expr_time) {
+    header('Location: vendor/logout.php');
+} elseif (isset($_SESSION['user'])) {
+    $_SESSION['log_start'] = time();
+}
 ?>
 
 <!DOCTYPE html>
@@ -99,6 +105,7 @@ session_start();
 
 
 </body>
+
 </html>
 
 

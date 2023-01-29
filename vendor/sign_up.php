@@ -52,6 +52,11 @@ if (mysqli_num_rows($check_email) > 0) {
 
 $error_fields = [];
 
+function validateDate($date, $format = 'Y-m-d H:i:s') {
+    $d = DateTime::createFromFormat($format, $date);
+    return $d && $d->format($format) == $date;
+}
+
 if ($email === '' || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
     $error_fields[] = 'email';
 }
@@ -64,15 +69,15 @@ if ($full_name === '') {
     $error_fields[] = 'full_name';
 }
 
-if ($phone_number === '') {
+if ($phone_number === '' || !preg_match("/^[0-9]{10,10}+$/", $phone_number)) {
     $error_fields[] = 'phone_number';
 }
 
-if ($birth_date === '') {
+if ($birth_date === '' || !validateDate($birth_date, 'Y-m-d')) {
     $error_fields[] = 'birth_date';
 }
 
-if ($inn === '') {
+if ($inn === '' || !preg_match("/^[0-9]{12,12}+$/", $inn)) {
     $error_fields[] = 'inn';
 }
 

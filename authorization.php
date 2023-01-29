@@ -5,6 +5,8 @@ if ($_SESSION['user']) {
     header('Location: index.php');
 }
 
+setcookie('cookiename', 'value', 0);
+
 ?>
 
 <!DOCTYPE html>

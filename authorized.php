@@ -9,6 +9,14 @@ if (!$_SESSION['user']) {
 
 $user_id = $_SESSION['user']['id'];
 
+$log_expr_time = 120;
+if (isset($_SESSION['log_start']) && time() - $_SESSION['log_start'] > $log_expr_time) {
+    header('Location: vendor/logout.php');
+} elseif (isset($_SESSION['user'])) {
+    $_SESSION['log_start'] = time();
+}
+
+
 ?>
 
 
