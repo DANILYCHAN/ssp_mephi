@@ -6,7 +6,7 @@ require_once 'coefs.php';
 
 mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 
-$max_contracts = 10;
+$max_contracts = 2;
 
 $standart_price = 3400;
 $sum_of_ins = $_POST['sum_of_ins'];
@@ -14,8 +14,6 @@ $otdelka = $_POST['otdelka'];
 $property = $_POST['property'];
 $otvetstvenntost = $_POST['otvetstvenntost'];
 $user_id = $_SESSION['user']['id'];
-
-mysqli_query($connect,"LOCK TABLES `users_parameters` WRITE, `contract` WRITE");
 
 $check_contract = mysqli_query($connect, "SELECT * FROM `users_parameters` WHERE `user_id` = '$user_id' AND `otdelka` IS NOT NULL");
 
@@ -37,10 +35,12 @@ $today = date("Y-m-d");
 
 $check_user = mysqli_query($connect, "SELECT * FROM `users_parameters` WHERE `user_id` = '$user_id'");
 
+mysqli_query($connect,"LOCK TABLES `users_parameters` WRITE, `contract` WRITE");    // BLOCK TABLES
 
 $check_amount_of_contracts = mysqli_query($connect, "SELECT * FROM `users_parameters` WHERE `sum_of_ins` IS NOT NULL");
 
 if (mysqli_num_rows($check_amount_of_contracts) < $max_contracts) {
+    sleep(5); // SLEEP TO RUN SECOND BUY
     if (mysqli_num_rows($check_user) == 0) {
         mysqli_query($connect, "INSERT INTO `users_parameters`
         (`id`, `user_id`, `sum_of_ins`, `otdelka`, `property`, `otvetstvenntost`)
@@ -86,5 +86,5 @@ if (mysqli_num_rows($check_amount_of_contracts) < $max_contracts) {
 }
 
 
-$query = "UNLOCK TABLES;";
+$query = "UNLOCK TABLES;"; // UNBLOCK TABLES
 mysqli_query($connect, $query);

@@ -4,7 +4,7 @@ session_start();
 require_once 'connect.php';
 require_once 'coefs.php';
 
-$max_contracts = 10;
+$max_contracts = 2;
 
 $standart_price = 5875; // 5772
 $power = $_POST['power'];
@@ -18,8 +18,6 @@ $owner = $_POST['owner'];
 $driversCol = $_POST['driversCol'];
 $gos_nomer = $_POST['gos_number'];
 $user_id = $_SESSION['user']['id'];
-
-mysqli_query($connect,"LOCK TABLES `users_parameters` WRITE, `contract` WRITE");
 
 $check_contract = mysqli_query($connect, "SELECT * FROM `users_parameters` WHERE `user_id` = '$user_id' AND `TB` IS NOT NULL");
 
@@ -43,11 +41,14 @@ $term_months = $strahTime_arr_2[$strahTime];
 
 $check_user = mysqli_query($connect, "SELECT * FROM `users_parameters` WHERE `user_id` = '$user_id'");
 
+mysqli_query($connect,"LOCK TABLES `users_parameters` WRITE, `contract` WRITE"); // LOCK TABLES
+
 $check_amount_of_contracts = mysqli_query($connect, "SELECT * FROM `users_parameters` WHERE `TB` IS NOT NULL");
 
 $today = date("Y-m-d");
 
 if (mysqli_num_rows($check_amount_of_contracts) < $max_contracts) {
+    sleep(5); // SLEEP TO RUN SECOND BUY
     if (mysqli_num_rows($check_user) == 0) {
         mysqli_query($connect, "INSERT INTO `users_parameters` 
         (`id`, `user_id`, `TB`, `KT`, `KBM`, `KBC`, `KO`, `KM`, `KC`, `KP`, `gosNomer`) 
@@ -90,5 +91,5 @@ if (mysqli_num_rows($check_amount_of_contracts) < $max_contracts) {
     echo json_encode($response);
 }
 
-$query = "UNLOCK TABLES;";
+$query = "UNLOCK TABLES;"; //UNLOCK TABLES
 mysqli_query($connect, $query);
